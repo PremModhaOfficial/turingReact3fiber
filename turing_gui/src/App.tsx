@@ -1,25 +1,26 @@
-import api from './api'
-import SetOfVariables from './components/SetOfVariables'
-import Table from './components/Table'
 import { useState } from 'react'
+import TuringMachineAnimation from './components/TapeHead.tsx'
+import api from './api.ts'
+import SetOfVariables from './components/SetOfVariables.tsx'
+import Table from './components/Table.tsx'
 
 
 function App() {
 
+    let res: any = ""
+    let [table, setTable] = useState("")
     let fet = async () => {
-        let res = await api.post('/config', { name: 'test' })
-        console.log(res.data)
+        return await api.post('/run', { name: 'test', table: table })
+        // console.log(res.data)
     }
-    // fet()
-    let vars = useState<string[]>()
-    let stats = useState<string[]>()
+    let vars = useState<string[]>(["*"])
+    let stats = useState<string[]>([])
+    // <SetOfVariables usestate={vars} header={`Variables`} />
+    // <SetOfVariables usestate={stats} header={`States`} />
+    // <Table vars={vars[0]} states={stats[0]} />
 
     return (
         <>
-            <SetOfVariables usestate={vars} header={`Variables`} />
-            <SetOfVariables usestate={stats} header={`States`} />
-            <Table vars={vars[0]} states={stats[0]} />
-
         </>
     )
 }

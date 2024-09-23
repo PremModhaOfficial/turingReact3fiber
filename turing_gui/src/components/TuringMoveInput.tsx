@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react"
 
 type TuringMoveInputProps = {
     row: string,
@@ -5,17 +6,22 @@ type TuringMoveInputProps = {
     cols: string[],
     rows: string[]
     data: any
+    setData: React.Dispatch<any>
 }
-export default function TuringMoveInput({ row, col, rows, cols, data }: TuringMoveInputProps) {
-    // <input type="text" id={`${row}:${col}:move`} />
+export default function TuringMoveInput({ row, col, rows, cols, data, setData }: TuringMoveInputProps) {
+
+    let [inpt, setInpt] = useState({ m: "", r: "", d: "" })
+
+    useEffect(() => {
+        setData({ ...data, [row]: { ...data[row], [col]: inpt } })
+    }, [inpt])
+
+
     return (
         <div>
             <select
                 onChange={
-                    e => {
-                        let obj = { ...data[0][`${row}`][`${col}`], move: e.target.value }
-                        data[1]({ ...data[0], obj })
-                    }
+                    e => { setInpt({ ...inpt, m: e.target.value }) }
                 }
                 id={`${row}:${col}:move`} >
                 <option defaultValue={undefined} >-</option>
@@ -23,21 +29,15 @@ export default function TuringMoveInput({ row, col, rows, cols, data }: TuringMo
             </select>
             <select
                 onChange={
-                    e => {
-                        let obj = { ...data[0][`${row}`][`${col}`], repl: e.target.value }
-                        data[1]({ ...data[0], obj })
-                    }
+                    e => { setInpt({ ...inpt, r: e.target.value }) }
                 }
-                id={`${row}:${col}:repl`}>
+            >
                 <option defaultValue={undefined} >-</option>
                 {cols.map((r) => <option key={r} value={r}>{r}</option>)}
             </select>
             <select
                 onChange={
-                    e => {
-                        let obj = { ...data[0][`${row}`][`${col}`], dire: e.target.value }
-                        data[1]({ ...data[0], obj })
-                    }
+                    e => { setInpt({ ...inpt, d: e.target.value }) }
                 }
                 id={`${row}:${col}:dire`}>
                 {["", "L", "R", "S"].map((mv) => <option key={mv} value={mv}>{mv}</option>)}
