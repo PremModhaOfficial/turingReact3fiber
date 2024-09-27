@@ -31,8 +31,19 @@ let api = axios.create({
 let postTuringConfig = (data: TuringConfig) => {
     api.post('config/', data.toString())
 }
+let set_blank_symbol = async (data: string) => {
+    let res = await api.post('blank/', { blank: data })
+    console.log(res)
+    return res.data
+}
 
-let getTuringTrace = async (data: TuringConfig) => {
+let setTuringTape = async (data: string) => {
+    let res = await api.post('tape/', { tape: data })
+    console.log(res)
+    return res.data
+}
+
+let getTuringTrace = async () => {
     let res = await api.get('run/')
     return res.data
 }
@@ -40,4 +51,4 @@ let getTuringTrace = async (data: TuringConfig) => {
 
 export default api;
 
-export { postTuringConfig, getTuringTrace }
+export { postTuringConfig, getTuringTrace, setTuringTape, set_blank_symbol }

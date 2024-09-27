@@ -1,7 +1,12 @@
 import React, { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import TuringMoveInput from "./TuringMoveInput";
 import api from "../api";
-import { useNavigate } from "react-router-dom";
 
 type TableProps = {
     vars: string[] | undefined;
@@ -20,8 +25,9 @@ type TableData = {
     };
 };
 
-const Table: React.FC<TableProps> = ({ vars, states }) => {
-    let navigate = useNavigate();
+const TuringMachineConfigTable: React.FC<TableProps> = ({ vars, states }) => {
+    const navigate = useNavigate();
+
     const initialData: TableData = useMemo(() => {
         const data: TableData = {};
         if (vars && states) {
@@ -37,65 +43,74 @@ const Table: React.FC<TableProps> = ({ vars, states }) => {
 
     const [dynData, setDynData] = useState<TableData>(initialData);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        let resp = api.post('/config', { name: 'test', table: dynData });
-        let isOk = false;
-        resp.then((res) => {
-            isOk = res.status == 200;
-            navigate('/animate');
-        })
+        try {
+            const res = await api.post('/config', { name: 'test', table: dynData });
+            if (res.status === 200) {
+                navigate('/animate');
+            }
+        } catch (error) {
+            console.error("Error saving configuration:", error);
+            // You might want to show an error message to the user here
+        }
     };
 
     if (!vars || !states) {
-        return <div className="text-center py-8">No variables or states defined.</div>;
+        return (
+            <Alert>
+                <AlertDescription>
+                    No variables or states defined. Please define them before configuring the Turing machine.
+                </AlertDescription>
+            </Alert>
+        );
     }
 
     return (
-        <div className="min-h-screen w-full bg-gray-100 flex items-center justify-center p-4">
-            <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-4xl overflow-x-auto">
-                <h2 className="text-2xl font-bold mb-4 text-gray-800">Turing Machine Configuration</h2>
-                <table className="w-full border-collapse mb-4">
-                    <thead>
-                        <tr className="bg-gray-200">
-                            <th className="border p-2">M</th>
-                            {vars.map((v, i) => (
-                                <th key={i} className="border p-2">{v}</th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {states.map((s, i) => (
-                            <tr key={i} className={i % 2 === 0 ? "bg-gray-50" : ""}>
-                                <td className="border p-2 font-medium">{s}</td>
-                                {vars.map((v, j) => (
-                                    <td key={j} className="border p-2">
-                                        <TuringMoveInput
-                                            row={s}
-                                            col={v}
-                                            cols={vars}
-                                            rows={states}
-                                            data={dynData}
-                                            setData={setDynData}
-                                        />
-                                    </td>
+        <Card className="w-full max-w-4xl mx-auto my-8">
+            <CardHeader>
+                <CardTitle>Turing Machine Configuration</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <ScrollArea className="h-[600px] w-full">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-[100px]">M</TableHead>
+                                {vars.map((v, i) => (
+                                    <TableHead key={i}>{v}</TableHead>
                                 ))}
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <div className="flex justify-end">
-                    <button
-                        type="submit"
-                        onClick={handleSubmit}
-                        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-                    >
-                        Save Configuration
-                    </button>
-                </div>
-            </div>
-        </div>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {states.map((s, i) => (
+                                <TableRow key={i}>
+                                    <TableCell className="font-medium">{s}</TableCell>
+                                    {vars.map((v, j) => (
+                                        <TableCell key={j}>
+                                            <TuringMoveInput
+                                                row={s}
+                                                col={v}
+                                                cols={vars}
+                                                rows={states}
+                                                data={dynData}
+                                                setData={setDynData}
+                                            />
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </ScrollArea>
+            </CardContent>
+            <CardFooter className="flex justify-end">
+                <Button onClick={handleSubmit}>
+                    Save Configuration
+                </Button>
+            </CardFooter>
+        </Card>
     );
 };
 
-export default Table;
+export default TuringMachineConfigTable;
