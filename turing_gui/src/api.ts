@@ -26,11 +26,18 @@ let api = axios.create({
     baseURL: "http://localhost:8000/api/"
 })
 
+
+
 let postTuringConfig = (data: TuringConfig) => {
     api.post('config/', data.toString())
+}
+
+let getTuringTrace = async (data: TuringConfig) => {
+    let res = await api.get('run/')
+    return res.data
 }
 
 
 export default api;
 
-export { postTuringConfig }
+export { postTuringConfig, getTuringTrace }

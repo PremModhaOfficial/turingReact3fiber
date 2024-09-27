@@ -1,28 +1,33 @@
-import { useState } from 'react'
-import TuringMachineAnimation from './components/TapeHead.tsx'
-import api from './api.ts'
-import SetOfVariables from './components/SetOfVariables.tsx'
-import Table from './components/Table.tsx'
+import { BrowserRouter, Link, Route, Routes, useNavigate } from "react-router-dom";
+import Tab from "./components/Tab";
+import WelcomeScreen from "./components/WellCome";
+import TuringMachine from "./components/Experimet";
+import { useState } from "react";
+import SetOfVariables from "./components/SetOfVariables";
+import BlankSymbolPage from "./components/BlankSymbol";
+import { Button } from "@/components/ui/button"
 
 
-function App() {
+export default function App() {
 
-    let res: any = ""
-    let [table, setTable] = useState("")
-    let fet = async () => {
-        return await api.post('/run', { name: 'test', table: table })
-        // console.log(res.data)
-    }
-    let vars = useState<string[]>(["*"])
-    let stats = useState<string[]>([])
-    // <SetOfVariables usestate={vars} header={`Variables`} />
-    // <SetOfVariables usestate={stats} header={`States`} />
-    // <Table vars={vars[0]} states={stats[0]} />
+    let [blank, setBlank] = useState<string>("");
+    let [variables, setVariables] = useState<string[]>([]);
+    let [states, setStates] = useState<string[]>([]);
 
     return (
-        <>
-        </>
-    )
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<WelcomeScreen />} />
+                <Route path="/config" element={
+                    <>
+                        <BlankSymbolPage usestate={[blank, setBlank]} />
+                        <SetOfVariables usestate={[variables, setVariables]} header={`Variables`} />
+                        <SetOfVariables usestate={[states, setStates]} header={`states`} />
+                        <center> <Link to={'/animate'}><Button>ANIMATE</Button></Link> </center>
+                    </>
+                } />
+                <Route path="/animate" element={<TuringMachine />} />
+            </Routes>
+        </BrowserRouter>
+    );
 }
-
-// export default App
