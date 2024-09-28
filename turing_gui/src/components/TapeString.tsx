@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { set_turing_tape } from '@/api';
 
 type UseStateType = [
     string,
@@ -27,6 +28,9 @@ const TapeStringPage: React.FC<TapeStringPageProps> = ({ usestate, alphabet, bla
         if (tapeString.length === 0) {
             setError('The tape string cannot be empty.');
             return;
+        } else {
+            set_turing_tape(tapeString)
+
         }
 
         const invalidCharacters = tapeString.split('').filter(char =>
@@ -40,7 +44,7 @@ const TapeStringPage: React.FC<TapeStringPageProps> = ({ usestate, alphabet, bla
 
         // Here you would typically save the tape string to your global state or context
         console.log('Tape string set to:', tapeString);
-        navigate(-1); // Navigate back to the previous page
+        // navigate(-1); // Navigate back to the previous page
     };
 
     return (

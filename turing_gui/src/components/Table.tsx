@@ -46,9 +46,12 @@ const TuringMachineConfigTable: React.FC<TableProps> = ({ vars, states }) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const res = await api.post('/config', { name: 'test', table: dynData });
-            if (res.status === 200) {
-                navigate('/animate');
+            if (dynData) {
+
+                const res = await api.post('/config/', { name: 'test', table: dynData });
+                if (res.status === 200) {
+                    navigate('/animate');
+                }
             }
         } catch (error) {
             console.error("Error saving configuration:", error);

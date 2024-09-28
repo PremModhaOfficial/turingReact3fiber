@@ -1,7 +1,7 @@
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import WelcomeScreen from "./components/WellCome";
 import TuringMachine from "./components/Experimet";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SetOfVariables from "./components/SetOfVariables";
 import BlankSymbolPage from "./components/BlankSymbol";
 import { Button } from "@/components/ui/button"
@@ -14,10 +14,18 @@ import { ThemeProvider } from "./components/ThemeProvider";
 export default function App() {
 
     let [blank, setBlank] = useState<string>("");
+    let [pblank, setpBlank] = useState<string>(blank);
     let [vars, setVariables] = useState<string[]>([]);
     let [stats, setStates] = useState<string[]>([]);
 
     let [tapeString, setTapeString] = useState<string>("");
+
+
+    useEffect(() => {
+        let n = vars.filter((a) => a !== pblank)
+        setVariables([...n, blank])
+        setpBlank(blank)
+    }, [blank])
 
     return (
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
@@ -31,7 +39,8 @@ export default function App() {
                             <SetOfVariables
                                 usestate={[vars, setVariables]}
                                 blankSymbol={blank}
-                                header={`Variables`} />
+                                header={`Variables`}
+                            />
                             <SetOfVariables
                                 usestate={[stats, setStates]}
                                 blankSymbol={blank}

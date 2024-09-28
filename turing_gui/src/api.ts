@@ -37,7 +37,7 @@ let set_blank_symbol = async (data: string) => {
     return res.data
 }
 
-let setTuringTape = async (data: string) => {
+let set_turing_tape = async (data: string) => {
     let res = await api.post('tape/', { tape: data })
     console.log(res)
     return res.data
@@ -51,4 +51,4 @@ let getTuringTrace = async () => {
 
 export default api;
 
-export { postTuringConfig, getTuringTrace, setTuringTape, set_blank_symbol }
+export { postTuringConfig, getTuringTrace, set_turing_tape, set_blank_symbol }

@@ -33,6 +33,7 @@ const BlankSymbolPage: React.FC<SetOfVariablesProps> = ({ usestate }) => {
         console.log('Blank symbol set to:', blankSymbol);
         setBlankSymbol(blankSymbol);
         // navigate(-1); // Navigate back to the previous page
+        set_blank_symbol(blankSymbol)
     };
 
     return (

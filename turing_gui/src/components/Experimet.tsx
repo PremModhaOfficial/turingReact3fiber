@@ -43,8 +43,20 @@ const Tape: React.FC<TapeProps> = ({ tapeSymbols, pointerLocation }) => {
     );
 };
 
+let defaulttrace = [
+    "q0:['*', '*', '1', '0', '1', '0', '1', '*', '*']:2",
+    "q1:['*', '*', '*', '1', '0', '1', '0', '1', '*', '*']:2",
+    "q1:['*', '*', '*', '1', '0', '1', '0', '1', '*', '*']:3",
+    "q1:['*', '*', '*', '0', '0', '1', '0', '1', '*', '*']:4",
+    "q1:['*', '*', '*', '0', '1', '1', '0', '1', '*', '*']:5",
+    "q1:['*', '*', '*', '0', '1', '0', '0', '1', '*', '*']:6",
+    "q1:['*', '*', '*', '0', '1', '0', '1', '1', '*', '*']:7",
+    "q2:['*', '*', '*', '0', '1', '0', '1', '0', '*', '*']:8"]
 // Utility function to parse trace
 const parseTrace = (traceItem: string): TraceStep => {
+    if (!traceItem) {
+        return { state: "", tapeSymbols: [], pointerLocation: 0 };
+    }
     const [state, tapeArrayStr, pointr] = traceItem.split(":");
     const tapeString = tapeArrayStr.match(/\[(.*?)\]/)?.[1] || "";
     const tapeSymbols = tapeString.split(",").map((s) => s.trim().replace(/['"]+/g, ""));
@@ -53,7 +65,7 @@ const parseTrace = (traceItem: string): TraceStep => {
 };
 
 // Main TuringMachine component
-const TuringMachine: React.FC = () => {
+const TuringMachine: React.FC = (blank: string) => {
     const [trace, setTrace] = useState<string[]>([]);
     const [accepted, setAccepted] = useState<boolean | null>(null);
     const [currentStep, setCurrentStep] = useState<number>(0);
@@ -85,6 +97,8 @@ const TuringMachine: React.FC = () => {
             const { tapeSymbols, pointerLocation } = parseTrace(trace[currentStep]);
             setCurrentTape(tapeSymbols);
             setPointer(pointerLocation);
+        } else {
+            setTrace(defaulttrace)
         }
     }, [trace, currentStep]);
 
